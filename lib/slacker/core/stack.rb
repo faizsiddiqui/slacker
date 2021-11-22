@@ -5,6 +5,10 @@ require "json"
 module Slacker
   # A group of layers
   class Stack
+    ##
+    # Layers in the stack
+    attr_accessor :layers
+
     def initialize(metadata, layers)
       @metadata = metadata
       @layers = layers

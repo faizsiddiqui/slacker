@@ -3,6 +3,10 @@
 module Slacker
   # A group of tasks
   class Layer
+    ##
+    # Tasks in the layer
+    attr_accessor :tasks
+
     def initialize(tasks)
       @tasks = tasks
     end
