@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+require_relative "core/stack"
+require_relative "core/layer"
+
+require_relative "tasks/file"
+require_relative "tasks/package"
+require_relative "tasks/service"
+
+module Slacker
+  # A execution plan on host
+  class Plan
+    def initialize(stack_path, host)
+      @stack_path = stack_path
+      @host = Slacker::Host.new(host)
+      @stack = Slacker::Stack.new(metadata(stack_path), layers(stack_path))
+    end
+
+    def apply
+      @stack.send(__method__, @host)
+    end
+
+    private
+
+    def metadata(stack_path)
+      JSON.parse(::File.read("#{stack_path}/stack.json"))
+    rescue StandardError => e
+      abort("Specify a correct stack.json file, error => #{e.message}")
+    end
+
+    def layers(stack_path)
+      Dir.glob("#{stack_path}/layers/*.json").sort.map do |layer|
+        tasks = JSON.parse(::File.read(layer)).map do |task|
+          Slacker.const_get(task["type"].capitalize).new(@stack_path, task)
+        end
+        Slacker::Layer.new(tasks)
+      end
+    rescue StandardError => e
+      abort("Specify correct layer files, error => #{e.message}")
+    end
+  end
+end

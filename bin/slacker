@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "slacker"
+require "optparse"
+require "json"
+
+# Slacker CLI
+class CLI
+  ##
+  # Main method to interpret the inputs
+  def execute
+    options = { inventory: "./inventory.json" }
+    args = OptionParser.new do |opts|
+      opts.banner = "Usage: #{$PROGRAM_NAME} <command> [options]\n
+      commands:\n\tapply\t\tExecutes a configuration plan
+      options:"
+      opts.on("-i", "-inventory INVENTORY", "Inventory file in JSON format") { |x| options[:inventory] = x }
+    end.parse!
+
+    process(args, options)
+  end
+
+  private
+
+  ##
+  # Method to process the input
+  def process(args, options)
+    case args.first
+    when "version"
+      puts Slacker::VERSION
+    when "apply"
+      # Processing inventory file
+      get_inventory(options[:inventory]).each do |inventory|
+        inventory["hosts"].each { |host| Slacker::Plan.new(inventory["stack"], host).apply }
+      end
+    end
+  end
+
+  ##
+  # Reads inventory file
+  def get_inventory(inventory_file)
+    JSON.parse(::File.read(inventory_file))
+  rescue StandardError => e
+    abort("Specify a correct inventory.json file, error => #{e.message}")
+  end
+end
+
+CLI.new.execute
