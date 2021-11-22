@@ -9,7 +9,10 @@ module Slacker
       if same?(connection)
         puts "Action already fulfilled!"
       else
-        connection.execute("echo -e '#{content.inspect.scan(/"(.*)"/)[0][0].gsub('\"', '"')}' | sudo tee #{@spec["dest"]} 1>/dev/null")
+        connection.execute("echo -e '#{content.inspect.scan(/"(.*)"/)[0][0].gsub('\"',
+                                                                                 '"')}' | sudo tee #{@spec["dest"]} 1>/dev/null")
+        connection.execute("sudo chmod #{@spec["mode"]} #{@spec["dest"]}")
+        connection.execute("sudo chown #{@spec["owner"]}:#{@spec["group"]} #{@spec["dest"]}")
       end
     end
 
@@ -29,8 +32,9 @@ module Slacker
     end
 
     def same?(connection)
-      return false unless exists?(connection)
+      return false unless exists?(connection) && stat(connection).eql?([@spec["mode"], @spec["owner"], @spec["group"]])
 
+      # check content
       current_state = current(connection)
       new_state = content
       current_state.eql?(new_state)
@@ -42,6 +46,10 @@ module Slacker
 
     def content
       ::File.read("#{@stack_path}/#{@spec["src"]}").chomp
+    end
+
+    def stat(connection)
+      connection.execute("sudo stat -c '%a,%U,%G' #{@spec["dest"]}", log_output: false).chomp.split(",")
     end
   end
 end
