@@ -8,13 +8,23 @@ module Slacker
       @id = task["id"]
       @type = task["type"]
       @spec = task["spec"]
-      @post = task["post"]
+      @post = task.fetch("post", [])
     end
 
     def apply(connection)
       raise "#{@type}[#{@spec["action"]}] not supported!" unless supported?
 
-      send("action_#{@spec["action"]}", connection)
+      # rubocop:disable Style/UnlessElse
+      unless send("action_#{@spec["action"]}", connection)
+        puts "Action already fulfilled!"
+      else
+        # Perform post task
+        @post.each do |task|
+          puts "\n\t[POST] #{task}\n"
+          task.send(__method__, connection)
+        end
+      end
+      # rubocop:enable Style/UnlessElse
     end
 
     def to_s

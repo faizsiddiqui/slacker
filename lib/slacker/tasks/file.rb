@@ -6,22 +6,18 @@ module Slacker
   # Configures file
   class File < Task
     def action_create(connection)
-      if same?(connection)
-        puts "Action already fulfilled!"
-      else
-        connection.execute("echo -e '#{content.inspect.scan(/"(.*)"/)[0][0].gsub('\"',
+      return false if same?(connection)
+
+      connection.execute("echo -e '#{content.inspect.scan(/"(.*)"/)[0][0].gsub('\"',
                                                                                  '"')}' | sudo tee #{@spec["dest"]} 1>/dev/null")
-        connection.execute("sudo chmod #{@spec["mode"]} #{@spec["dest"]}")
-        connection.execute("sudo chown #{@spec["owner"]}:#{@spec["group"]} #{@spec["dest"]}")
-      end
+      connection.execute("sudo chmod #{@spec["mode"]} #{@spec["dest"]}")
+      connection.execute("sudo chown #{@spec["owner"]}:#{@spec["group"]} #{@spec["dest"]}")
     end
 
     def action_delete(connection)
-      if exists?(connection)
-        connection.execute("sudo rm -f #{@spec["dest"]}")
-      else
-        puts "Action already fulfilled!"
-      end
+      return false unless exists?(connection)
+
+      connection.execute("sudo rm -f #{@spec["dest"]}")
     end
 
     private

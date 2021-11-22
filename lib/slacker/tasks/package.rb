@@ -6,19 +6,15 @@ module Slacker
   # Configures package
   class Package < Task
     def action_install(connection)
-      if installed?(connection)
-        puts "Action already fulfilled!"
-      else
-        connection.execute("sudo apt -y install #{@spec["name"]}")
-      end
+      return false if installed?(connection)
+
+      connection.execute("sudo apt -y install #{@spec["name"]}")
     end
 
     def action_remove(connection)
-      if installed?(connection)
-        connection.execute("sudo apt -y remove #{@spec["name"]}")
-      else
-        puts "Action already fulfilled!"
-      end
+      return false unless installed?(connection)
+
+      connection.execute("sudo apt -y remove #{@spec["name"]}")
     end
 
     private

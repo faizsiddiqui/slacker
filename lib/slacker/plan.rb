@@ -31,6 +31,10 @@ module Slacker
     def layers(stack_path)
       Dir.glob("#{stack_path}/layers/*.json").sort.map do |layer|
         tasks = JSON.parse(::File.read(layer)).map do |task|
+          task.fetch("post", []).map! do |post_task|
+            Slacker.const_get(post_task["type"].capitalize).new(@stack_path, post_task)
+          end
+
           Slacker.const_get(task["type"].capitalize).new(@stack_path, task)
         end
         Slacker::Layer.new(tasks)

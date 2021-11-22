@@ -6,11 +6,9 @@ module Slacker
   # Configures service
   class Service < Task
     def action_start(connection)
-      if running?(connection)
-        puts "Action already fulfilled!"
-      else
-        connection.execute("sudo systemctl start #{@spec["name"]}")
-      end
+      return false if running?(connection)
+
+      connection.execute("sudo systemctl start #{@spec["name"]}")
     end
 
     def action_restart(connection)
