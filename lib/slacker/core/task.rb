@@ -26,7 +26,7 @@ module Slacker
 
         # Perform post task
         unless @post.nil?
-          puts "\n\t[POST] #{"-" * 45}"
+          puts "\n[POST] #{"-" * 45}"
           @post.send(__method__, connection)
         end
       end
@@ -34,7 +34,7 @@ module Slacker
     end
 
     def to_s
-      "\t🔸 TID# #{@id}: #{@type}[#{@spec}]"
+      "🔸 TID# #{@id}: #{@type}[#{@spec}]"
     end
 
     def supported?

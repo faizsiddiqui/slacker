@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "type": "package",
+    "spec": {
+      "name": "apache2",
+      "action": "install"
+    }
+  },
+  {
+    "id": 2,
+    "type": "file",
+    "spec": {
+      "dest": "/var/www/html/index.html",
+      "action": "delete"
+    }
+  },
+  {
+    "id": 3,
+    "type": "file",
+    "spec": {
+      "src": "files/index.php",
+      "dest": "/var/www/html/index.php",
+      "owner": "root",
+      "group": "root",
+      "mode": "644",
+      "action": "create"
+    },
+    "post": [
+      {
+        "id": 1,
+        "type": "service",
+        "spec": {
+          "name": "apache2",
+          "action": "restart"
+        }
+      }
+    ]
+  }
+]
