@@ -9,7 +9,7 @@ module Slacker
       return false if same?(connection)
 
       connection.execute("echo -e '#{content.inspect.scan(/"(.*)"/)[0][0].gsub('\"',
-                                                                                 '"')}' | sudo tee #{@spec["dest"]} 1>/dev/null")
+                                                                               '"')}' | sudo tee #{@spec["dest"]} 1>/dev/null")
       connection.execute("sudo chmod #{@spec["mode"]} #{@spec["dest"]}")
       connection.execute("sudo chown #{@spec["owner"]}:#{@spec["group"]} #{@spec["dest"]}")
     end
@@ -21,7 +21,7 @@ module Slacker
     end
 
     def to_s
-      "\tTID# #{@id}: #{@type}[#{@spec["src"]} -> #{@spec["dest"]} (#{@spec["action"]})]"
+      "\t🔸 TID# #{@id}: #{@type}[#{@spec["src"]} -> #{@spec["dest"]} (#{@spec["action"]})]"
     end
 
     private

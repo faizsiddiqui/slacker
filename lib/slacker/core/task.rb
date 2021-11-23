@@ -20,9 +20,9 @@ module Slacker
 
       # rubocop:disable Style/UnlessElse
       unless send("action_#{@spec["action"]}", connection)
-        puts "[SKIPPED] #{self} \u2705\n"
+        puts "[SKIPPED] #{self} ✅\n"
       else
-        puts "[DONE] #{self} \u2705\n"
+        puts "[DONE] #{self} ✅\n"
 
         # Perform post task
         unless @post.nil?
@@ -34,7 +34,7 @@ module Slacker
     end
 
     def to_s
-      "\tTID# #{@id}: #{@type}[#{@spec}]"
+      "\t🔸 TID# #{@id}: #{@type}[#{@spec}]"
     end
 
     def supported?

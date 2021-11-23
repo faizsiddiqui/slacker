@@ -33,7 +33,7 @@ class CLI
     when "apply"
       # Processing inventory file
       get_inventory(options[:inventory]).each do |inventory|
-        inventory["hosts"].each do |host| 
+        inventory["hosts"].each do |host|
           Slacker::Plan.new(inventory["stack"], host).apply
           puts "\n#{"x" * 100}"
         end

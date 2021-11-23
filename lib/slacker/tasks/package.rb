@@ -18,7 +18,7 @@ module Slacker
     end
 
     def to_s
-      "\tTID# #{@id}: #{@type}[#{@spec["name"]} (#{@spec["action"]})]"
+      "\t🔸 TID# #{@id}: #{@type}[#{@spec["name"]} (#{@spec["action"]})]"
     end
 
     private
