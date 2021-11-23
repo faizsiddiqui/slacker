@@ -12,7 +12,7 @@ module Slacker
     end
 
     def apply(connection)
-      @tasks.each do |task|
+      @tasks.sort_by!(&:id).each do |task|
         puts "\n#{task}\n"
         task.send(__method__, connection)
       end

@@ -3,6 +3,10 @@
 module Slacker
   #  A discrete unit of work
   class Task
+    ##
+    # Task ID
+    attr_accessor :id
+
     def initialize(stack_path, task)
       @stack_path = stack_path
       @id = task["id"]
@@ -16,19 +20,16 @@ module Slacker
 
       # rubocop:disable Style/UnlessElse
       unless send("action_#{@spec["action"]}", connection)
-        puts "Action already fulfilled!"
+        puts "[SKIPPED] #{self} \u2713\n"
       else
         # Perform post task
-        @post.each do |task|
-          puts "\n\t[POST] #{task}\n"
-          task.send(__method__, connection)
-        end
+        @post.send(__method__, connection)
       end
       # rubocop:enable Style/UnlessElse
     end
 
     def to_s
-      "TID# #{@id}: #{@type}[#{@spec}]"
+      "\tTID# #{@id}: #{@type}[#{@spec}]"
     end
 
     def supported?

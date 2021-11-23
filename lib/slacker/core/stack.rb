@@ -16,7 +16,7 @@ module Slacker
 
     def apply(host)
       @layers.each.with_index(1) do |layer, index|
-        puts "\nApplying layer ##{index} on #{host}\n#{"-" * 50}"
+        puts "\n#{"=" * 80}\nApplying layer ##{index} on #{host}\n#{"=" * 80}"
         layer.send(__method__, host.connection)
       end
     end

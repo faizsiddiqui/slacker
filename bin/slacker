@@ -33,7 +33,10 @@ class CLI
     when "apply"
       # Processing inventory file
       get_inventory(options[:inventory]).each do |inventory|
-        inventory["hosts"].each { |host| Slacker::Plan.new(inventory["stack"], host).apply }
+        inventory["hosts"].each do |host| 
+          Slacker::Plan.new(inventory["stack"], host).apply
+          puts "\n#{"x" * 100}"
+        end
       end
     end
   end
@@ -42,7 +45,7 @@ class CLI
   # Reads inventory file
   def get_inventory(inventory_file)
     JSON.parse(::File.read(inventory_file))
-  rescue StandardError => e
+  rescue Errno::ENOENT, JSON::ParserError => e
     abort("Specify a correct inventory.json file, error => #{e.message}")
   end
 end
