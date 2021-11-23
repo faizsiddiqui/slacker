@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    slacker (0.1.0)
+    slacker (0.2.0)
       net-ssh
 
 GEM
