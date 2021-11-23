@@ -34,7 +34,7 @@ module Slacker
           post_tasks = task.fetch("post", []).map do |post_task|
             Slacker.const_get(post_task["type"].capitalize).new(@stack_path, post_task)
           end
-          task["post"] = Slacker::Layer.new(post_tasks)
+          task["post"] = Slacker::Layer.new(post_tasks) if post_tasks.count.positive?
 
           Slacker.const_get(task["type"].capitalize).new(@stack_path, task)
         end

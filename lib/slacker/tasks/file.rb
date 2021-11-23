@@ -20,6 +20,10 @@ module Slacker
       connection.execute("sudo rm -f #{@spec["dest"]}")
     end
 
+    def to_s
+      "\tTID# #{@id}: #{@type}[#{@spec["src"]} -> #{@spec["dest"]} (#{@spec["action"]})]"
+    end
+
     private
 
     def exists?(connection)

@@ -12,7 +12,7 @@ module Slacker
       @id = task["id"]
       @type = task["type"]
       @spec = task["spec"]
-      @post = task.fetch("post", [])
+      @post = task["post"]
     end
 
     def apply(connection)
@@ -20,10 +20,15 @@ module Slacker
 
       # rubocop:disable Style/UnlessElse
       unless send("action_#{@spec["action"]}", connection)
-        puts "[SKIPPED] #{self} \u2713\n"
+        puts "[SKIPPED] #{self} \u2705\n"
       else
+        puts "[DONE] #{self} \u2705\n"
+
         # Perform post task
-        @post.send(__method__, connection)
+        unless @post.nil?
+          puts "\n\t[POST] #{"-" * 45}"
+          @post.send(__method__, connection)
+        end
       end
       # rubocop:enable Style/UnlessElse
     end

@@ -15,6 +15,10 @@ module Slacker
       connection.execute("sudo systemctl restart #{@spec["name"]}")
     end
 
+    def to_s
+      "\tTID# #{@id}: #{@type}[#{@spec["name"]} (#{@spec["action"]})]"
+    end
+
     private
 
     def running?(connection)

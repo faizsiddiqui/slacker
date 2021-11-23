@@ -57,7 +57,7 @@ module Slacker
         return output
       rescue StandardError => e
         puts("Exception occured connecting to #{node} : #{e.message}")
-        raise("#{self.class}.#{__method__} : #{e}") unless retry_count < @options[:retries]
+        raise("#{self.class}.#{__method__} : #{e}") unless retry_count < options[:retries]
 
         puts("Retrying connection to #{node} after 60 seconds... [##{retry_count}]")
         sleep 60

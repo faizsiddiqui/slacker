@@ -17,6 +17,10 @@ module Slacker
       connection.execute("sudo apt -y remove #{@spec["name"]}")
     end
 
+    def to_s
+      "\tTID# #{@id}: #{@type}[#{@spec["name"]} (#{@spec["action"]})]"
+    end
+
     private
 
     def installed?(connection)
