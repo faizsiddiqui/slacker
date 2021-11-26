@@ -7,19 +7,20 @@ module Slacker
     # Task ID
     attr_accessor :id
 
-    def initialize(stack_path, task)
+    def initialize(stack_path, task, connection)
       @stack_path = stack_path
+      @connection = connection
       @id = task["id"]
       @type = task["type"]
       @spec = task["spec"]
       @post = task["post"]
     end
 
-    def apply(connection)
+    def apply
       raise "#{@type}[#{@spec["action"]}] not supported!" unless supported?
 
       # rubocop:disable Style/UnlessElse
-      unless send("action_#{@spec["action"]}", connection)
+      unless send("action_#{@spec["action"]}")
         puts "[SKIPPED] #{self} ✅\n"
       else
         puts "[DONE] #{self} ✅\n"
@@ -27,7 +28,7 @@ module Slacker
         # Perform post task
         unless @post.nil?
           puts "\n[POST] #{"-" * 45}"
-          @post.send(__method__, connection)
+          @post.send(__method__)
         end
       end
       # rubocop:enable Style/UnlessElse

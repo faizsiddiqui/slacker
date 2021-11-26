@@ -13,11 +13,11 @@ module Slacker
     def initialize(stack_path, host)
       @stack_path = stack_path
       @host = Slacker::Host.new(host)
-      @stack = Slacker::Stack.new(metadata(stack_path), layers(stack_path))
+      @stack = Slacker::Stack.new(metadata(stack_path), layers(stack_path), @host)
     end
 
     def apply
-      @stack.send(__method__, @host)
+      @stack.send(__method__)
     end
 
     private
@@ -32,11 +32,11 @@ module Slacker
       Dir.glob("#{stack_path}/layers/*.json").sort.map do |layer|
         tasks = JSON.parse(::File.read(layer)).map do |task|
           post_tasks = task.fetch("post", []).map do |post_task|
-            Slacker.const_get(post_task["type"].capitalize).new(@stack_path, post_task)
+            Slacker.const_get(post_task["type"].capitalize).new(@stack_path, post_task, @host.connection)
           end
           task["post"] = Slacker::Layer.new(post_tasks) if post_tasks.count.positive?
 
-          Slacker.const_get(task["type"].capitalize).new(@stack_path, task)
+          Slacker.const_get(task["type"].capitalize).new(@stack_path, task, @host.connection)
         end
         Slacker::Layer.new(tasks)
       end

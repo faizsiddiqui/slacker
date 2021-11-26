@@ -13,7 +13,7 @@ gem install pkg/slacker-<version>.gem
 or
 
 ```bash
-gem install slacker
+gem install slacker --source "https://rubygems.pkg.github.com/faizsiddiqui"
 ```
 
 ## Usage

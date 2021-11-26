@@ -5,16 +5,16 @@ require_relative "../core/task"
 module Slacker
   # Configures package
   class Package < Task
-    def action_install(connection)
-      return false if installed?(connection)
+    def action_install
+      return false if installed?
 
-      connection.execute("sudo apt -y install #{@spec["name"]}")
+      @connection.execute("sudo apt -y install #{@spec["name"]}")
     end
 
-    def action_remove(connection)
-      return false unless installed?(connection)
+    def action_remove
+      return false unless installed?
 
-      connection.execute("sudo apt -y remove #{@spec["name"]}")
+      @connection.execute("sudo apt -y remove #{@spec["name"]}")
     end
 
     def to_s
@@ -23,8 +23,8 @@ module Slacker
 
     private
 
-    def installed?(connection)
-      connection.execute("sudo apt list -i #{@spec["name"]} 2> /dev/null").include?("installed")
+    def installed?
+      @connection.execute("sudo apt list -i #{@spec["name"]} 2> /dev/null").include?("installed")
     end
   end
 end

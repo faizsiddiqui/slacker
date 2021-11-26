@@ -10,9 +10,17 @@ RSpec.describe Slacker::Stack do
     }
   end
 
+  let(:host) do
+    Slacker::Host.new({
+                        "address" => "1.2.3.4",
+                        "user" => "root",
+                        "password" => "xxxxxxxxx"
+                      })
+  end
+
   it "validate stack object" do
     layers = [Slacker::Layer.new([]), Slacker::Layer.new([])]
-    stack = Slacker::Stack.new(metadata, layers)
+    stack = Slacker::Stack.new(metadata, layers, host)
 
     expect(stack).not_to be_nil
     expect(stack.layers).to all(be_an(Slacker::Layer))
